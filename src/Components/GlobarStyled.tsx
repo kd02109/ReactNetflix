@@ -54,7 +54,7 @@ table {
 
 body {
     font-family: 'Source Sans Pro', sans-serif;
-
+  height: 150vh;
 
 }
 
