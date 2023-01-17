@@ -1,11 +1,8 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getMovieNowPlaying, IGetMoviesResult } from "../api/api";
-import { makeImagePath } from "../utils";
-
-interface IBannerProp {
-  bgPhoto: string;
-}
+import Slider from "../Components/Slider";
+import { makeImagePath } from "../utils/utils";
 
 const Wrapper = styled.div`
   background-color: black;
@@ -24,8 +21,11 @@ const Banner = styled.div<{ bgPhoto: string }>`
   flex-direction: column;
   justify-content: center;
   padding: 60px;
-  background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgPhoto});
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: center center;
 `;
 
 const Title = styled.h2`
@@ -54,6 +54,7 @@ function Home() {
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
+          <Slider />
         </>
       )}
     </Wrapper>

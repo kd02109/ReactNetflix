@@ -57,8 +57,11 @@ body {
     color: ${(props) => props.theme.white.darker};
     line-height: 1.2;
     background-color: black;
+    
 }
-
+::-webkit-scrollbar {
+display: none;
+}
 a{
     text-decoration: none;
     color:inherit //부모에게서 색 가지고 와라
