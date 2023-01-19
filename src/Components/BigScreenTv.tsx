@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { getMovieDetail, ISearchMovie } from "../api/api";
+import { getTvSearch, ISearchTv } from "../api/api";
 import { makeImagePath } from "../utils/utils";
 
 const Overlay = styled(motion.div)`
@@ -49,7 +49,7 @@ const PosterImg = styled.div`
 `;
 
 const DetailBox = styled.div`
-  width: 60%;
+  width: 100%;
 
   p {
     display: block;
@@ -57,6 +57,7 @@ const DetailBox = styled.div`
     position: relative;
     top: -2em;
     left: 15em;
+    width: 60%;
   }
 `;
 
@@ -73,6 +74,12 @@ const TitleBox = styled.div`
     &:nth-child(2) {
       color: #e84118;
       margin-left: 10px;
+    }
+    &:last-child {
+      margin-left: 10px;
+      font-size: 12px;
+      opacity: 0.7;
+      text-align: match-parent;
     }
   }
 `;
@@ -99,16 +106,16 @@ interface IBigMovieProp {
   id: string;
 }
 
-function BigScreen({ id }: IBigMovieProp) {
+function BigScreenTv({ id }: IBigMovieProp) {
   const history = useHistory();
-  const { data: searchMovie, isLoading } = useQuery<ISearchMovie>(
-    `searchMovie${id}`,
-    () => getMovieDetail(id)
+  const { data: searchTv, isLoading } = useQuery<ISearchTv>(
+    `searchTv${id}`,
+    () => getTvSearch(id)
   );
-  console.log(searchMovie);
+  console.log(searchTv);
 
   const onClickBackHome = () => {
-    history.push("/");
+    history.push("/tv");
   };
   return (
     <>
@@ -118,7 +125,7 @@ function BigScreen({ id }: IBigMovieProp) {
           <BigImg
             style={{
               backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                searchMovie?.backdrop_path || searchMovie?.poster_path || "",
+                searchTv?.backdrop_path || searchTv?.poster_path || "",
                 "w500"
               )})`,
             }}
@@ -126,21 +133,22 @@ function BigScreen({ id }: IBigMovieProp) {
           <PosterImg
             style={{
               backgroundImage: `url(${makeImagePath(
-                searchMovie?.poster_path || "",
+                searchTv?.poster_path || "",
                 "w500"
               )})`,
             }}
           />
-          <ReleaseDate>Release Date: {searchMovie?.release_date}</ReleaseDate>
+          <ReleaseDate>Release Date: {searchTv?.first_air_date}</ReleaseDate>
           <DetailBox>
             <TitleBox>
-              <h2>{searchMovie?.title}</h2>
-              <h2>{searchMovie?.vote_average.toFixed(1)}</h2>
+              <h2>{searchTv?.name}</h2>
+              <h2>{searchTv?.vote_average.toFixed(1)}</h2>
+              <h2>{`(season: ${searchTv?.number_of_seasons})`}</h2>
             </TitleBox>
-            {searchMovie?.genres.map((data) => (
+            {searchTv?.genres.map((data) => (
               <GenreTag>{data.name}</GenreTag>
             ))}
-            <p>{searchMovie?.overview}</p>
+            <p>{searchTv?.overview}</p>
           </DetailBox>
         </>
       </BigMovie>
@@ -148,4 +156,4 @@ function BigScreen({ id }: IBigMovieProp) {
   );
 }
 
-export default BigScreen;
+export default BigScreenTv;

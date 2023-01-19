@@ -1,9 +1,15 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getMovieNowPlaying, IGetMoviesResult } from "../api/api";
+import {
+  getTvOntheAir,
+  getTvPopular,
+  getTvSearch,
+  getTvTopRated,
+  IGetTv,
+} from "../api/api";
 import Slider from "../Components/Slider";
+import SliderTv from "../Components/SliderTv";
 import { makeImagePath } from "../utils/utils";
-
 const Wrapper = styled.div`
   background-color: black;
 `;
@@ -39,21 +45,34 @@ const Overview = styled.p`
 `;
 
 function Tv() {
-  const { data, isLoading } = useQuery<IGetMoviesResult>(
-    "movieNowPlaying",
-    getMovieNowPlaying
+  const { data: tvNow, isLoading: tvNowIsLoading } = useQuery<IGetTv>(
+    "tvNowPlaying",
+    getTvOntheAir
   );
-  console.log(data, isLoading);
+  const { data: tvPopular, isLoading: tvPopularisLoading } = useQuery<IGetTv>(
+    "tvPopular",
+    getTvPopular
+  );
+  const { data: tvRated, isLoading: tvRatedIsLoading } = useQuery<IGetTv>(
+    "tvSearch",
+    getTvTopRated
+  );
+
   return (
     <Wrapper>
-      {isLoading ? (
+      {tvNowIsLoading ? (
         <Loader>Loading</Loader>
       ) : (
         <>
-          <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}>
-            <Title>{data?.results[0].title}</Title>
-            <Overview>{data?.results[0].overview}</Overview>
+          <Banner
+            bgPhoto={makeImagePath(tvNow?.results[0].backdrop_path || "")}
+          >
+            <Title>{tvNow?.results[0].name}</Title>
+            <Overview>{tvNow?.results[0].overview}</Overview>
           </Banner>
+          <SliderTv option={"new"} title={"Now Playing"} data={tvNow} />
+          <SliderTv option={"rated"} title={"Top Rated"} data={tvRated} />
+          <SliderTv option={"popular"} title={"Popular"} data={tvPopular} />
         </>
       )}
     </Wrapper>

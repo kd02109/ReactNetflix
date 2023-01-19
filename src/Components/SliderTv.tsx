@@ -7,8 +7,8 @@ import styled from "styled-components";
 import useWindowDimensions from "../utils/useWindowDimensions";
 import { makeImagePath } from "../utils/utils";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { IGetMoviesResult } from "../api/api";
-import BigScreen from "./BigScreen";
+import { IGetTv } from "../api/api";
+import BigScreenTv from "./BigScreenTv";
 
 const SlideBox = styled(motion.div)`
   position: relative;
@@ -90,12 +90,12 @@ const infoVariants: Variants = {
 interface ISliderProp {
   option: string;
   title: string;
-  data?: IGetMoviesResult;
+  data?: IGetTv;
 }
 
-function Slider({ option, title, data }: ISliderProp) {
-  const bigMovieMatch = useRouteMatch<{ movieId: string }>(`/movies/:movieId`);
-  console.log(bigMovieMatch);
+function SliderTv({ option, title, data }: ISliderProp) {
+  const tvMatch = useRouteMatch<{ tvId: string }>(`/tv/:tvId`);
+  console.log(tvMatch);
   const [back, setBack] = useState(false);
   const history = useHistory();
   const width = useWindowDimensions();
@@ -120,8 +120,8 @@ function Slider({ option, title, data }: ISliderProp) {
       setIndex((prev) => (prev === 0 ? 3 : prev - 1));
     }
   };
-  const onBoxClick = (movieId: number) => {
-    history.push(`/movies/${movieId}`);
+  const onBoxClick = (tvId: number) => {
+    history.push(`/tv/${tvId}`);
   };
 
   return (
@@ -145,16 +145,16 @@ function Slider({ option, title, data }: ISliderProp) {
             {data?.results
               .slice(1)
               .slice(offset * index, offset * index + offset)
-              .map((movie) => (
+              .map((tv) => (
                 <Box
-                  onClick={() => onBoxClick(movie.id)}
-                  key={movie.id}
+                  onClick={() => onBoxClick(tv.id)}
+                  key={tv.id}
                   variants={scaleVariants}
                   whileHover="hover"
                   initial="normal"
                   transition={{ type: "tween" }}
                   bgPhoto={makeImagePath(
-                    movie.backdrop_path || movie.poster_path,
+                    tv.backdrop_path || tv.poster_path,
                     "w500"
                   )}
                 >
@@ -162,7 +162,7 @@ function Slider({ option, title, data }: ISliderProp) {
                     variants={infoVariants}
                     transition={{ type: "tween", delay: 0.5, duration: 0.3 }}
                   >
-                    <h4>{movie.title}</h4>
+                    <h4>{tv.name}</h4>
                   </InfoBox>
                 </Box>
               ))}
@@ -171,9 +171,9 @@ function Slider({ option, title, data }: ISliderProp) {
         </AnimatePresence>
       </SlideBox>
       <AnimatePresence>
-        {bigMovieMatch ? (
+        {tvMatch ? (
           <>
-            <BigScreen id={bigMovieMatch.params.movieId} />
+            <BigScreenTv id={tvMatch.params.tvId} />
           </>
         ) : null}
       </AnimatePresence>
@@ -181,7 +181,7 @@ function Slider({ option, title, data }: ISliderProp) {
   );
 }
 
-export default Slider;
+export default SliderTv;
 
 /*
 const slideVariants: Variants = {
