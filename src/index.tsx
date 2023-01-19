@@ -6,6 +6,7 @@ import { ThemeProvider } from "styled-components";
 import App from "./App";
 import GlobalStyled from "./Components/GlobarStyled";
 import { theme } from "./theme";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ root.render(
           <GlobalStyled />
           <App />
         </ThemeProvider>
+        <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </RecoilRoot>
   </React.StrictMode>

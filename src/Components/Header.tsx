@@ -1,7 +1,12 @@
 import styled from "styled-components";
 import { motion, useAnimation, Variants, useScroll } from "framer-motion";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+
+interface IForm {
+  keyword: string;
+}
 
 const Nav = styled(motion.nav)`
   width: 100%;
@@ -50,7 +55,7 @@ const Item = styled.li`
   justify-content: center;
 `;
 
-const Search = styled.span`
+const Search = styled.form`
   color: white;
   svg {
     height: 25px;
@@ -121,6 +126,12 @@ function Header() {
   };
   const { scrollY } = useScroll();
   const navAnimation = useAnimation();
+  const history = useHistory();
+  const { register, handleSubmit } = useForm<IForm>();
+  const onSearch = (data: IForm) => {
+    console.log(data);
+    history.push(`/search?keyword=${data.keyword}`);
+  };
   useEffect(() => {
     scrollY.onChange(() => {
       if (scrollY.get() > 80) {
@@ -162,8 +173,9 @@ function Header() {
         </Items>
       </Col>
       <Col>
-        <Search onClick={onClickSearch}>
+        <Search onSubmit={handleSubmit(onSearch)}>
           <motion.svg
+            onClick={onClickSearch}
             animate={{ x: searchOpen ? -185 : 0 }}
             transition={{ duration: 0.5, ease: "linear" }}
             fill="currentColor"
@@ -176,14 +188,15 @@ function Header() {
               clipRule="evenodd"
             ></path>
           </motion.svg>
+          <SearchMovie
+            {...register("keyword", { required: true, minLength: 2 })}
+            animate={inputAnimation}
+            type="text"
+            placeholder="Search for movie or tv show..."
+            initial={{ scaleX: 0 }}
+            transition={{ duration: 0.5, ease: "linear" }}
+          />
         </Search>
-        <SearchMovie
-          animate={inputAnimation}
-          type="text"
-          placeholder="Search for movie or tv show..."
-          initial={{ scaleX: 0 }}
-          transition={{ duration: 0.5, ease: "linear" }}
-        />
       </Col>
     </Nav>
   );

@@ -1,9 +1,14 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import { getMovieNowPlaying, IGetMoviesResult } from "../api/api";
+import {
+  getMovieNowPlaying,
+  IGetMoviesResult,
+  getMoviePopular,
+  getMovieTopRated,
+  getMovieUpComing,
+} from "../api/api";
 import Slider from "../Components/Slider";
 import { makeImagePath } from "../utils/utils";
-
 const Wrapper = styled.div`
   background-color: black;
 `;
@@ -39,22 +44,31 @@ const Overview = styled.p`
 `;
 
 function Home() {
-  const { data, isLoading } = useQuery<IGetMoviesResult>(
-    "movieNowPlaying",
-    getMovieNowPlaying
-  );
-  console.log(data, isLoading);
+  const { data: movieNow, isLoading: nowIsLoading } =
+    useQuery<IGetMoviesResult>("movieNowPlaying", getMovieNowPlaying);
+  const { data: moviePopular, isLoading: popularisLoading } =
+    useQuery<IGetMoviesResult>("moviePopular", getMoviePopular);
+  const { data: movieTopRated, isLoading: topRatedIsLoading } =
+    useQuery<IGetMoviesResult>("movieTopRated", getMovieTopRated);
+  const { data: movieUpcoming, isLoading: upcomingIsLoading } =
+    useQuery<IGetMoviesResult>("movieUpcoming", getMovieUpComing);
+
   return (
     <Wrapper>
-      {isLoading ? (
+      {nowIsLoading ? (
         <Loader>Loading</Loader>
       ) : (
         <>
-          <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}>
-            <Title>{data?.results[0].title}</Title>
-            <Overview>{data?.results[0].overview}</Overview>
+          <Banner
+            bgPhoto={makeImagePath(movieNow?.results[0].backdrop_path || "")}
+          >
+            <Title>{movieNow?.results[0].title}</Title>
+            <Overview>{movieNow?.results[0].overview}</Overview>
           </Banner>
-          <Slider />
+          <Slider option={"new"} title={"Now Playing"} data={movieNow} />
+          <Slider option={"rated"} title={"Top Rated"} data={movieTopRated} />
+          <Slider option={"upcoming"} title={"Upcoming"} data={movieUpcoming} />
+          <Slider option={"popular"} title={"Popular"} data={moviePopular} />
         </>
       )}
     </Wrapper>

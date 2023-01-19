@@ -1,21 +1,21 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { motion, AnimatePresence, Variants, useScroll } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useState } from "react";
-import { useQuery } from "react-query";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { getMovieNowPlaying, IGetMoviesResult } from "../api/api";
+
 import useWindowDimensions from "../utils/useWindowDimensions";
 import { makeImagePath } from "../utils/utils";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { url } from "inspector";
+import { IGetMoviesResult } from "../api/api";
+import BigScreen from "./BigScreen";
 
 const SlideBox = styled(motion.div)`
   position: relative;
-  top: -150px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 200px;
 `;
 
 const Row = styled(motion.div)`
@@ -68,52 +68,12 @@ const InfoBox = styled(motion.div)`
   }
 `;
 
-const Overlay = styled(motion.div)`
-  position: fixed;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+const MenuTitle = styled.h2`
+  position: absolute;
+  font-size: 30px;
+  top: -100px;
+  margin-left: 20px;
 `;
-
-const BigMovie = styled(motion.div)`
-  width: 30vw;
-  height: 80vh;
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
-  background-color: ${(props) => props.theme.black.lighter};
-  border-radius: 50px;
-  overflow: hiden;
-
-  h2 {
-    color: ${(props) => props.theme.white.lighter};
-    padding: 20px;
-    font-size: 30px;
-    position: relative;
-    top: -80px;
-  }
-  p {
-    display: block;
-    padding: 20px;
-    position: relative;
-    top: -80px;
-  }
-`;
-
-const BigImg = styled.div`
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  width: 100%;
-  height: 40vh;
-  border-top-left-radius: 50px;
-  border-top-right-radius: 50px;
-`;
-
 const scaleVariants: Variants = {
   normal: { scale: 1 },
   hover: {
@@ -127,23 +87,21 @@ const infoVariants: Variants = {
   hover: { opacity: 1 },
 };
 
-function Slider() {
-  const bigMovieMatch = useRouteMatch<{ movieId: string }>("/movies/:movieId");
+interface ISliderProp {
+  option: string;
+  title: string;
+  data?: IGetMoviesResult;
+}
+
+function Slider({ option, title, data }: ISliderProp) {
+  const bigMovieMatch = useRouteMatch<{ movieId: string }>(`/movies/:movieId`);
+  console.log(bigMovieMatch);
   const [back, setBack] = useState(false);
   const history = useHistory();
   const width = useWindowDimensions();
   const offset = 6;
-  const { data, isLoading } = useQuery<IGetMoviesResult>(
-    "movieNowPlaying",
-    getMovieNowPlaying
-  );
   const [index, setIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    data?.results.find(
-      (movie) => movie.id.toString() === bigMovieMatch.params.movieId
-    );
   const increaseIndex = () => {
     if (data) {
       if (leaving) return;
@@ -165,12 +123,11 @@ function Slider() {
   const onBoxClick = (movieId: number) => {
     history.push(`/movies/${movieId}`);
   };
-  const onClickBackHome = () => {
-    history.push("/");
-  };
+
   return (
     <>
       <SlideBox>
+        <MenuTitle>{title}</MenuTitle>
         <AnimatePresence
           initial={false}
           onExitComplete={() => setLeaving((prev) => !prev)}
@@ -200,7 +157,6 @@ function Slider() {
                     movie.backdrop_path || movie.poster_path,
                     "w500"
                   )}
-                  layoutId={`${movie.id}`}
                 >
                   <InfoBox
                     variants={infoVariants}
@@ -217,27 +173,7 @@ function Slider() {
       <AnimatePresence>
         {bigMovieMatch ? (
           <>
-            <Overlay
-              onClick={onClickBackHome}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-            />
-            <BigMovie layoutId={`${bigMovieMatch.params.movieId}`}>
-              {clickedMovie && (
-                <>
-                  <BigImg
-                    style={{
-                      backgroundImage: `linear-gradient(to top, black, transparent), url(${makeImagePath(
-                        clickedMovie.backdrop_path || clickedMovie.poster_path,
-                        "w500"
-                      )})`,
-                    }}
-                  ></BigImg>
-                  <h2>{clickedMovie.title}</h2>
-                  <p>{clickedMovie.overview}</p>
-                </>
-              )}
-            </BigMovie>
+            <BigScreen data={data} id={bigMovieMatch.params.movieId} />
           </>
         ) : null}
       </AnimatePresence>
