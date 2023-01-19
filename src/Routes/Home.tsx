@@ -55,7 +55,10 @@ function Home() {
 
   return (
     <Wrapper>
-      {nowIsLoading ? (
+      {nowIsLoading &&
+      popularisLoading &&
+      topRatedIsLoading &&
+      upcomingIsLoading ? (
         <Loader>Loading</Loader>
       ) : (
         <>

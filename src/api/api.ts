@@ -75,6 +75,13 @@ export interface ISearchTv {
   number_of_seasons: number;
 }
 
+export interface IGetMoviesSearch {
+  page: number;
+  results: IMovie[];
+  total_pages: number;
+  total_results: number;
+}
+
 //API MOVIE
 export async function getMovieNowPlaying() {
   return fetch(
@@ -123,4 +130,17 @@ export async function getTvSearch(id: string) {
   return fetch(`${BASE_PATH}tv/${id}?api_key=${API_KEY}&language=en-US`).then(
     (response) => response.json()
   );
+}
+
+//API SEARCH
+
+export async function getMoviesSearch(name: string) {
+  return fetch(
+    `${BASE_PATH}search/movie?api_key=${API_KEY}&language=en-US&query=${name}&page=1`
+  ).then((response) => response.json());
+}
+export async function getTvsSearch(name: string) {
+  return fetch(
+    `${BASE_PATH}/search/tv?api_key=${API_KEY}&language=en-US&page=1&query=${name}&include_adult=false`
+  ).then((response) => response.json());
 }

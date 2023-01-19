@@ -1,13 +1,6 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
-import {
-  getTvOntheAir,
-  getTvPopular,
-  getTvSearch,
-  getTvTopRated,
-  IGetTv,
-} from "../api/api";
-import Slider from "../Components/Slider";
+import { getTvOntheAir, getTvPopular, getTvTopRated, IGetTv } from "../api/api";
 import SliderTv from "../Components/SliderTv";
 import { makeImagePath } from "../utils/utils";
 const Wrapper = styled.div`
@@ -60,12 +53,16 @@ function Tv() {
 
   return (
     <Wrapper>
-      {tvNowIsLoading ? (
+      {tvNowIsLoading && tvPopularisLoading && tvRatedIsLoading ? (
         <Loader>Loading</Loader>
       ) : (
         <>
           <Banner
-            bgPhoto={makeImagePath(tvNow?.results[0].backdrop_path || "")}
+            bgPhoto={makeImagePath(
+              tvNow?.results[0].backdrop_path ||
+                tvNow?.results[0].poster_path ||
+                ""
+            )}
           >
             <Title>{tvNow?.results[0].name}</Title>
             <Overview>{tvNow?.results[0].overview}</Overview>

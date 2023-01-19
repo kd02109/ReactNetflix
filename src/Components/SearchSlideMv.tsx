@@ -16,6 +16,7 @@ const SlideBox = styled(motion.div)`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 200px;
+  margin-top: 200px;
 `;
 
 const Row = styled(motion.div)`
@@ -91,11 +92,12 @@ interface ISliderProp {
   option: string;
   title: string;
   data?: IGetMoviesResult | IGetMoviesSearch;
+  keyword: string;
 }
 
-function Slider({ option, title, data }: ISliderProp) {
-  const bigMovieMatch = useRouteMatch<{ movieId: string }>(`/movies/:movieId`);
-  console.log(bigMovieMatch);
+function SearchSlideMv({ option, title, data, keyword }: ISliderProp) {
+  const bigsearchMatch = useRouteMatch<{ id: string }>(`/search/movie/:id`);
+  console.log(bigsearchMatch);
   const [back, setBack] = useState(false);
   const history = useHistory();
   const width = useWindowDimensions();
@@ -107,8 +109,8 @@ function Slider({ option, title, data }: ISliderProp) {
       if (leaving) return;
       setLeaving(true);
       setBack(false);
-      const totalMovies = data.results.length - 1;
-      const maxIndex = Math.ceil(totalMovies / offset) - 1;
+      const totalMovies = data.results.length;
+      const maxIndex = Math.floor(totalMovies / offset);
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
@@ -120,8 +122,8 @@ function Slider({ option, title, data }: ISliderProp) {
       setIndex((prev) => (prev === 0 ? 3 : prev - 1));
     }
   };
-  const onBoxClick = (movieId: number) => {
-    history.push(`/movies/${movieId}`);
+  const onBoxClick = (searchId: number) => {
+    history.push(`/search/movie/${searchId}`);
   };
 
   return (
@@ -143,7 +145,6 @@ function Slider({ option, title, data }: ISliderProp) {
             key={index}
           >
             {data?.results
-              .slice(1)
               .slice(offset * index, offset * index + offset)
               .map((movie) => (
                 <Box
@@ -171,17 +172,19 @@ function Slider({ option, title, data }: ISliderProp) {
         </AnimatePresence>
       </SlideBox>
       <AnimatePresence>
-        {bigMovieMatch ? (
+        {bigsearchMatch ? (
           <>
-            <BigScreen id={bigMovieMatch.params.movieId} />
+            <BigScreen id={bigsearchMatch.params.id} />
           </>
-        ) : null}
+        ) : (
+          <span>Nothing</span>
+        )}
       </AnimatePresence>
     </>
   );
 }
 
-export default Slider;
+export default SearchSlideMv;
 
 /*
 const slideVariants: Variants = {
