@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { getMovieDetail, ISearchMovie } from "../api/api";
-import { makeImagePath } from "../utils/utils";
+import { getMovieDetail, ISearchMovie } from "../../api/api";
+import { makeImagePath } from "../../utils/utils";
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -37,7 +37,7 @@ const BigImg = styled.div`
 `;
 
 const PosterImg = styled.div`
-  width: 15vw;
+  width: 18vw;
   height: 43vh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -95,20 +95,22 @@ const ReleaseDate = styled.span`
   opacity: 0.7;
 `;
 
-interface IBigMovieProp {
+interface IBigSearchProp {
   id: string;
+  menu: string;
+  keyword: string | null;
+  option: string;
 }
 
-function BigScreen({ id }: IBigMovieProp) {
+function BigScreenSearchMovie({ id, menu, keyword, option }: IBigSearchProp) {
   const history = useHistory();
   const { data: searchMovie, isLoading } = useQuery<ISearchMovie>(
     `searchMovie${id}`,
     () => getMovieDetail(id)
   );
-  console.log(searchMovie);
 
   const onClickBackHome = () => {
-    history.push("/");
+    history.push(`/search?keyword=${keyword}`);
   };
   return (
     <>
@@ -126,7 +128,7 @@ function BigScreen({ id }: IBigMovieProp) {
           <PosterImg
             style={{
               backgroundImage: `url(${makeImagePath(
-                searchMovie?.poster_path || "",
+                searchMovie?.poster_path || searchMovie?.backdrop_path || "",
                 "w500"
               )})`,
             }}
@@ -148,4 +150,4 @@ function BigScreen({ id }: IBigMovieProp) {
   );
 }
 
-export default BigScreen;
+export default BigScreenSearchMovie;

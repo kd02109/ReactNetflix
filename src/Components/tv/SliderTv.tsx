@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 
-import useWindowDimensions from "../utils/useWindowDimensions";
-import { makeImagePath } from "../utils/utils";
+import useWindowDimensions from "../../utils/useWindowDimensions";
+import { makeImagePath } from "../../utils/utils";
 import { faAngleRight, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
-import { IGetMoviesResult, IGetMoviesSearch } from "../api/api";
-import BigScreen from "./BigScreen";
+import { IGetTv } from "../../api/api";
+import BigScreenTv from "./BigScreenTv";
 
 const SlideBox = styled(motion.div)`
   position: relative;
@@ -16,7 +16,6 @@ const SlideBox = styled(motion.div)`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 200px;
-  margin-top: 200px;
 `;
 
 const Row = styled(motion.div)`
@@ -91,13 +90,13 @@ const infoVariants: Variants = {
 interface ISliderProp {
   option: string;
   title: string;
-  data?: IGetMoviesResult | IGetMoviesSearch;
-  keyword: string;
+  data?: IGetTv;
 }
 
-function SearchSlideMv({ option, title, data, keyword }: ISliderProp) {
-  const bigsearchMatch = useRouteMatch<{ id: string }>(`/search/movie/:id`);
-  console.log(bigsearchMatch);
+function SliderTv({ option, title, data }: ISliderProp) {
+  const tvMatch = useRouteMatch<{ tvId: string }>(`/tv/:tvId`);
+  console.log(tvMatch);
+  console.log(tvMatch);
   const [back, setBack] = useState(false);
   const history = useHistory();
   const width = useWindowDimensions();
@@ -109,8 +108,8 @@ function SearchSlideMv({ option, title, data, keyword }: ISliderProp) {
       if (leaving) return;
       setLeaving(true);
       setBack(false);
-      const totalMovies = data.results.length;
-      const maxIndex = Math.floor(totalMovies / offset);
+      const totalMovies = data.results.length - 1;
+      const maxIndex = Math.ceil(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
@@ -122,8 +121,8 @@ function SearchSlideMv({ option, title, data, keyword }: ISliderProp) {
       setIndex((prev) => (prev === 0 ? 3 : prev - 1));
     }
   };
-  const onBoxClick = (searchId: number) => {
-    history.push(`/search/movie/${searchId}`);
+  const onBoxClick = (tvId: number) => {
+    history.push(`/tv/${tvId}`);
   };
 
   return (
@@ -145,17 +144,18 @@ function SearchSlideMv({ option, title, data, keyword }: ISliderProp) {
             key={index}
           >
             {data?.results
+              .slice(1)
               .slice(offset * index, offset * index + offset)
-              .map((movie) => (
+              .map((tv) => (
                 <Box
-                  onClick={() => onBoxClick(movie.id)}
-                  key={movie.id}
+                  onClick={() => onBoxClick(tv.id)}
+                  key={tv.id}
                   variants={scaleVariants}
                   whileHover="hover"
                   initial="normal"
                   transition={{ type: "tween" }}
                   bgPhoto={makeImagePath(
-                    movie.backdrop_path || movie.poster_path,
+                    tv.backdrop_path || tv.poster_path,
                     "w500"
                   )}
                 >
@@ -163,7 +163,7 @@ function SearchSlideMv({ option, title, data, keyword }: ISliderProp) {
                     variants={infoVariants}
                     transition={{ type: "tween", delay: 0.5, duration: 0.3 }}
                   >
-                    <h4>{movie.title}</h4>
+                    <h4>{tv.name}</h4>
                   </InfoBox>
                 </Box>
               ))}
@@ -172,19 +172,17 @@ function SearchSlideMv({ option, title, data, keyword }: ISliderProp) {
         </AnimatePresence>
       </SlideBox>
       <AnimatePresence>
-        {bigsearchMatch ? (
+        {tvMatch ? (
           <>
-            <BigScreen id={bigsearchMatch.params.id} />
+            <BigScreenTv id={tvMatch.params.tvId} />
           </>
-        ) : (
-          <span>Nothing</span>
-        )}
+        ) : null}
       </AnimatePresence>
     </>
   );
 }
 
-export default SearchSlideMv;
+export default SliderTv;
 
 /*
 const slideVariants: Variants = {

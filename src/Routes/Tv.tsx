@@ -1,7 +1,7 @@
 import { useQuery } from "react-query";
 import styled from "styled-components";
 import { getTvOntheAir, getTvPopular, getTvTopRated, IGetTv } from "../api/api";
-import SliderTv from "../Components/SliderTv";
+import SliderTv from "../Components/tv/SliderTv";
 import { makeImagePath } from "../utils/utils";
 const Wrapper = styled.div`
   background-color: black;

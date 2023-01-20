@@ -2,8 +2,8 @@ import { motion } from "framer-motion";
 import { useQuery } from "react-query";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { getTvSearch, ISearchTv } from "../api/api";
-import { makeImagePath } from "../utils/utils";
+import { getTvSearch, ISearchTv } from "../../api/api";
+import { makeImagePath } from "../../utils/utils";
 
 const Overlay = styled(motion.div)`
   position: fixed;

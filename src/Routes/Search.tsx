@@ -1,15 +1,9 @@
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import {
-  getMoviesSearch,
-  getTvsSearch,
-  IGetMoviesSearch,
-  IGetTv,
-} from "../api/api";
-import Loader from "../Components/Loader";
-import SearchSlideMv from "../Components/SearchSlideMv";
+import { getMoviesSearch, getTvsSearch, IGetMoviesSearch } from "../api/api";
+import Modal from "../Components/searh/Modal";
 
 const Wrapper = styled.div`
   margin-top: 100px;
@@ -26,44 +20,47 @@ const SearchTvMovie = styled.input`
   font-size: 20px;
 `;
 
+interface ISearchForm {
+  searchTvMovie: string;
+}
+
 function Search() {
   //useLocation을 통해 지금 있는 곳에 관한 정보를 받아올 수 있다.
   const location = useLocation();
   const search = new URLSearchParams(location.search).get("keyword");
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit } = useForm<ISearchForm>();
   console.log(location);
   console.log(search);
-
+  const history = useHistory();
   const { data: moviesData, isLoading: moviesLodaing } =
     useQuery<IGetMoviesSearch>(`searchMovie${search}`, () =>
       getMoviesSearch(search || "")
     );
-  const { data: tvsData, isLoading: tvsLodaing } = useQuery<IGetTv>(
+  const { data: tvsData, isLoading: tvsLodaing } = useQuery<IGetMoviesSearch>(
     `searchTv${search}`,
     () => getTvsSearch(search || "")
   );
-  console.log(moviesData, tvsData);
+
+  const onVaild = (dataSearch: ISearchForm) => {
+    history.push(`/search?keyword=${dataSearch.searchTvMovie}`);
+  };
   return (
     <Wrapper>
-      <Form>
+      <Form onSubmit={handleSubmit(onVaild)}>
         <SearchTvMovie
           type="text"
           {...register("searchTvMovie", { required: true, minLength: 2 })}
           placeholder="title"
         />
       </Form>
-      {moviesLodaing && tvsLodaing ? (
-        <Loader />
-      ) : (
-        <>
-          <SearchSlideMv
-            option={"search"}
-            title={"Movie Search"}
-            keyword={search || ""}
-            data={moviesData}
-          />
-        </>
-      )}
+      <span>{search}로 검색한 결과입니다.</span>
+      <Modal
+        data={moviesData}
+        option={"Movie Search"}
+        keyword={search}
+        menu={"movie"}
+      />
+      <Modal data={tvsData} option={"Tv Search"} keyword={search} menu={"tv"} />
     </Wrapper>
   );
 }

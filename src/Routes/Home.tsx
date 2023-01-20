@@ -7,7 +7,7 @@ import {
   getMovieTopRated,
   getMovieUpComing,
 } from "../api/api";
-import Slider from "../Components/Slider";
+import Slider from "../Components/movie/Slider";
 import { makeImagePath } from "../utils/utils";
 const Wrapper = styled.div`
   background-color: black;

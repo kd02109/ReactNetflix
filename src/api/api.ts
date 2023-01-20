@@ -6,22 +6,24 @@ interface IMovie {
   overview: string;
   release_date: string;
   id: number;
-  original_title: string;
-  title: string;
+  original_title?: string;
+  title?: string;
   backdrop_path: string;
   popularity: number;
   vote_count: number;
   vote_average: number;
+  original_name?: string;
+  name?: string;
 }
 
 export interface IGetMoviesResult {
   page: number;
   results: IMovie[];
-  dates: {
+  dates?: {
     maximum: string;
     minimum: string;
   };
-  total_pages: number;
+  total_pages?: number;
   total_results: number;
 }
 
@@ -38,6 +40,7 @@ export interface ISearchMovie {
   tagline: string;
   title: string;
   vote_average: number;
+  sucess: boolean;
 }
 
 interface ITv {
@@ -73,6 +76,7 @@ export interface ISearchTv {
   vote_average: number;
   number_of_episodes: number;
   number_of_seasons: number;
+  sucess: boolean;
 }
 
 export interface IGetMoviesSearch {
