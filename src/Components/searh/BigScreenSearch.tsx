@@ -37,7 +37,7 @@ const BigImg = styled.div`
 `;
 
 const PosterImg = styled.div`
-  width: 18vw;
+  width: 16vw;
   height: 43vh;
   background-size: 100% 100%;
   background-repeat: no-repeat;
