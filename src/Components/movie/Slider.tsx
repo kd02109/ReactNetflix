@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 import styled from "styled-components";
 
 import useWindowDimensions from "../../utils/useWindowDimensions";
@@ -94,10 +94,10 @@ interface ISliderProp {
 }
 
 function Slider({ option, title, data }: ISliderProp) {
-  const bigMovieMatch = useRouteMatch<{ movieId: string }>(`/movies/:movieId`);
+  const bigMovieMatch = useMatch(`/movies/:movieId`);
   console.log(bigMovieMatch);
   const [back, setBack] = useState(false);
-  const history = useHistory();
+  const history = useNavigate();
   const width = useWindowDimensions();
   const offset = 6;
   const [index, setIndex] = useState(0);
@@ -121,7 +121,7 @@ function Slider({ option, title, data }: ISliderProp) {
     }
   };
   const onBoxClick = (movieId: number) => {
-    history.push(`/movies/${movieId}`);
+    history(`/movies/${movieId}`);
   };
 
   return (
@@ -173,7 +173,7 @@ function Slider({ option, title, data }: ISliderProp) {
       <AnimatePresence>
         {bigMovieMatch ? (
           <>
-            <BigScreen id={bigMovieMatch.params.movieId} />
+            <BigScreen id={bigMovieMatch.params.movieId || ""} />
           </>
         ) : null}
       </AnimatePresence>

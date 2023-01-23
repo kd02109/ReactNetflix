@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getTvSearch, ISearchTv } from "../../api/api";
 import { makeImagePath } from "../../utils/utils";
@@ -107,7 +107,7 @@ interface IBigMovieProp {
 }
 
 function BigScreenTv({ id }: IBigMovieProp) {
-  const history = useHistory();
+  const history = useNavigate();
   const { data: searchTv, isLoading } = useQuery<ISearchTv>(
     `searchTv${id}`,
     () => getTvSearch(id)
@@ -115,7 +115,7 @@ function BigScreenTv({ id }: IBigMovieProp) {
   console.log(searchTv);
 
   const onClickBackHome = () => {
-    history.push("/tv");
+    history("/tv");
   };
   return (
     <>

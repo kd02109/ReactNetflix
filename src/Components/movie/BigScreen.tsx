@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useQuery } from "react-query";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getMovieDetail, ISearchMovie } from "../../api/api";
 import { makeImagePath } from "../../utils/utils";
@@ -100,7 +100,7 @@ interface IBigMovieProp {
 }
 
 function BigScreen({ id }: IBigMovieProp) {
-  const history = useHistory();
+  const history = useNavigate();
   const { data: searchMovie, isLoading } = useQuery<ISearchMovie>(
     `searchMovie${id}`,
     () => getMovieDetail(id)
@@ -109,7 +109,7 @@ function BigScreen({ id }: IBigMovieProp) {
   console.log(id);
 
   const onClickBackHome = () => {
-    history.push("/");
+    history("/");
   };
   return (
     <>

@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useState } from "react";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 import styled from "styled-components";
 
 import useWindowDimensions from "../../utils/useWindowDimensions";
@@ -94,11 +94,11 @@ interface ISliderProp {
 }
 
 function SliderTv({ option, title, data }: ISliderProp) {
-  const tvMatch = useRouteMatch<{ tvId: string }>(`/tv/:tvId`);
+  const tvMatch = useMatch(`/tv/:tvId`);
   console.log(tvMatch);
   console.log(tvMatch);
   const [back, setBack] = useState(false);
-  const history = useHistory();
+  const history = useNavigate();
   const width = useWindowDimensions();
   const offset = 6;
   const [index, setIndex] = useState(0);
@@ -122,7 +122,7 @@ function SliderTv({ option, title, data }: ISliderProp) {
     }
   };
   const onBoxClick = (tvId: number) => {
-    history.push(`/tv/${tvId}`);
+    history(`/tv/${tvId}`);
   };
 
   return (
@@ -174,7 +174,7 @@ function SliderTv({ option, title, data }: ISliderProp) {
       <AnimatePresence>
         {tvMatch ? (
           <>
-            <BigScreenTv id={tvMatch.params.tvId} />
+            <BigScreenTv id={tvMatch.params.tvId || ""} />
           </>
         ) : null}
       </AnimatePresence>

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { IGetMoviesSearch } from "../../api/api";
 import { makeImagePath } from "../../utils/utils";
 import { AnimatePresence, motion, Variants } from "framer-motion";
-import { useHistory, useRouteMatch } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 import BigScreenSearch from "./BigScreenSearch";
 import BigScreenSearchTv from "./BigScreenSearchTv";
 
@@ -10,11 +10,6 @@ interface IModalProps {
   data?: IGetMoviesSearch;
   option: string;
   keyword: string | null;
-  menu: string;
-}
-
-interface IParams {
-  id: string;
   menu: string;
 }
 
@@ -74,12 +69,11 @@ const scaleVariants: Variants = {
 };
 
 function Modal({ data, option, keyword, menu }: IModalProps) {
-  const isMatch = useRouteMatch<IParams>(`/search/:menu/:id`);
-  const history = useHistory();
+  const isMatch = useMatch(`/search/:menu/:id`);
+  const history = useNavigate();
   const onClick = (id: number) => {
     console.log(isMatch?.params.id);
-    console.log(isMatch);
-    history.push(`/search/${menu}/${id}?keyword=${keyword}`);
+    history(`/search/${menu}/${id}?keyword=${keyword}`);
   };
   return (
     <Wrapper>
@@ -114,17 +108,17 @@ function Modal({ data, option, keyword, menu }: IModalProps) {
             ))}
           </MovieBox>
           <AnimatePresence>
-            {menu === "movie" && isMatch && (
+            {isMatch && menu === "movie" && (
               <BigScreenSearch
-                id={isMatch.params.id}
+                id={isMatch.params.id || ""}
                 menu={"search"}
                 keyword={keyword}
                 option={"movie"}
               />
             )}
-            {menu === "tv" && isMatch && (
+            {isMatch && menu === "tv" && (
               <BigScreenSearchTv
-                id={isMatch.params.id}
+                id={isMatch.params.id || ""}
                 menu={"search"}
                 keyword={keyword}
                 option={"tv"}

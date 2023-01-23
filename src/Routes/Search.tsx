@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import { useQuery } from "react-query";
-import { useHistory, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { getMoviesSearch, getTvsSearch, IGetMoviesSearch } from "../api/api";
 import Modal from "../Components/searh/Modal";
@@ -31,7 +31,7 @@ function Search() {
   const { register, handleSubmit } = useForm<ISearchForm>();
   console.log(location);
   console.log(search);
-  const history = useHistory();
+  const history = useNavigate();
   const { data: moviesData, isLoading: moviesLodaing } =
     useQuery<IGetMoviesSearch>(`searchMovie${search}`, () =>
       getMoviesSearch(search || "")
@@ -42,7 +42,7 @@ function Search() {
   );
 
   const onVaild = (dataSearch: ISearchForm) => {
-    history.push(`/search?keyword=${dataSearch.searchTvMovie}`);
+    history(`/search?keyword=${dataSearch.searchTvMovie}`);
   };
   return (
     <Wrapper>
