@@ -53,7 +53,15 @@ function Search() {
           placeholder="title"
         />
       </Form>
-      <span>{search}로 검색한 결과입니다.</span>
+      <span>
+        {tvsData?.total_pages === 0 && moviesData?.total_pages === 0
+          ? `Movies, Tv 모두 검색 결과가 없습니다.`
+          : tvsData?.total_pages === 0 && moviesData?.total_pages !== 0
+          ? `${search}로 검색한 결과입니다. 영화 검색 결과는 없습니다.`
+          : tvsData?.total_pages !== 0 && moviesData?.total_pages === 0
+          ? `${search}로 검색한 결과입니다. TV 프로그램 검색 결과는 없습니다.`
+          : `${search}로 검색한 결과입니다.`}
+      </span>
       <Modal
         data={moviesData}
         option={"Movie Search"}

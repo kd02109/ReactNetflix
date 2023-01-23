@@ -70,6 +70,8 @@ const scaleVariants: Variants = {
 
 function Modal({ data, option, keyword, menu }: IModalProps) {
   const isMatch = useMatch(`/search/:menu/:id`);
+  const movieMatch = useMatch(`/search/movie/:id`);
+  const tvMatch = useMatch(`/search/tv/:id`);
   const history = useNavigate();
   const onClick = (id: number) => {
     console.log(isMatch?.params.id);
@@ -108,22 +110,22 @@ function Modal({ data, option, keyword, menu }: IModalProps) {
             ))}
           </MovieBox>
           <AnimatePresence>
-            {isMatch && menu === "movie" && (
+            {movieMatch ? (
               <BigScreenSearch
-                id={isMatch.params.id || ""}
+                id={movieMatch.params.id || ""}
                 menu={"search"}
                 keyword={keyword}
                 option={"movie"}
               />
-            )}
-            {isMatch && menu === "tv" && (
+            ) : null}
+            {tvMatch ? (
               <BigScreenSearchTv
-                id={isMatch.params.id || ""}
+                id={tvMatch.params.id || ""}
                 menu={"search"}
                 keyword={keyword}
                 option={"tv"}
               />
-            )}
+            ) : null}
           </AnimatePresence>
         </Box>
       )}
