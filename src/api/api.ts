@@ -117,7 +117,7 @@ export async function getMovieDetail(id: string) {
 
 export async function getTvOntheAir() {
   return fetch(
-    `${BASE_PATH}tv/on_the_air/?api_key=${API_KEY}&language=en-US&page=1`
+    `${BASE_PATH}tv/on_the_air?api_key=${API_KEY}&language=en-US&page=1`
   ).then((response) => response.json());
 }
 export async function getTvPopular() {
