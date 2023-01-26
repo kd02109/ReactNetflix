@@ -11,6 +11,10 @@ const Wrapper = styled.div`
   height: 100%;
   padding: 20px;
 `;
+const WrapperForm = styled.div`
+  display: flex;
+  justify-content: space-around;
+`;
 const Form = styled.form``;
 const SearchTvMovie = styled.input`
   width: 300px;
@@ -18,6 +22,9 @@ const SearchTvMovie = styled.input`
   color: white;
   background-color: transparent;
   font-size: 20px;
+`;
+const SearhResult = styled.span`
+  font-size: 30px;
 `;
 
 interface ISearchForm {
@@ -46,22 +53,24 @@ function Search() {
   };
   return (
     <Wrapper>
-      <Form onSubmit={handleSubmit(onVaild)}>
-        <SearchTvMovie
-          type="text"
-          {...register("searchTvMovie", { required: true, minLength: 2 })}
-          placeholder="title"
-        />
-      </Form>
-      <span>
-        {tvsData?.total_pages === 0 && moviesData?.total_pages === 0
-          ? `Movies, Tv 모두 검색 결과가 없습니다.`
-          : tvsData?.total_pages === 0 && moviesData?.total_pages !== 0
-          ? `${search}로 검색한 결과입니다. 영화 검색 결과는 없습니다.`
-          : tvsData?.total_pages !== 0 && moviesData?.total_pages === 0
-          ? `${search}로 검색한 결과입니다. TV 프로그램 검색 결과는 없습니다.`
-          : `${search}로 검색한 결과입니다.`}
-      </span>
+      <WrapperForm>
+        <Form onSubmit={handleSubmit(onVaild)}>
+          <SearchTvMovie
+            type="text"
+            {...register("searchTvMovie", { required: true, minLength: 2 })}
+            placeholder="title"
+          />
+        </Form>
+        <SearhResult>
+          {tvsData?.total_pages === 0 && moviesData?.total_pages === 0
+            ? `Movies, Tv 모두 검색 결과가 없습니다.`
+            : tvsData?.total_pages === 0 && moviesData?.total_pages !== 0
+            ? `${search}로 검색한 결과입니다. 영화 검색 결과는 없습니다.`
+            : tvsData?.total_pages !== 0 && moviesData?.total_pages === 0
+            ? `${search}로 검색한 결과입니다. TV 프로그램 검색 결과는 없습니다.`
+            : `${search}로 검색한 결과입니다.`}
+        </SearhResult>
+      </WrapperForm>
       <Modal
         data={moviesData}
         option={"Movie Search"}

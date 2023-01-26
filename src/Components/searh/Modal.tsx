@@ -79,9 +79,7 @@ function Modal({ data, option, keyword, menu }: IModalProps) {
   };
   return (
     <Wrapper>
-      {data?.total_pages === 0 ? (
-        <span>검색결과가 없습니다.</span>
-      ) : (
+      {data?.total_pages === 0 ? null : (
         <Box>
           <Search>{option}</Search>
           <MovieBox>
